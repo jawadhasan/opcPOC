@@ -1,0 +1,7 @@
+GenericSensorType,1,ObjectType
+MachineType,31,ObjectType
+MotorConveyor,22,ObjectType
+OPCUAServer1,80,Object
+OPCUAServerType,55,ObjectType
+ProximitySensor,15,ObjectType
+TemperatureSensor,8,ObjectType
