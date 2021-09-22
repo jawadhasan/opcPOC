@@ -3,12 +3,14 @@ using Opc.Ua.Server;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace OPCUAServer
 {
     class NodeManager : CustomNodeManager2
     {
         private static OPCUAServerState opcUaServer;
+        private Random _random = new Random();
 
         public NodeManager(IServerInternal server, ApplicationConfiguration configuration) : base(server, configuration)
         {
@@ -51,6 +53,10 @@ namespace OPCUAServer
                 // here add the methods handler
                 opcUaServer.Machine.Conveyor.Start.OnCallMethod = new GenericMethodCalledEventHandler(OnStart);
                 opcUaServer.Machine.Conveyor.Stop.OnCallMethod = new GenericMethodCalledEventHandler(OnStop);
+                
+                //custom code example
+                SetInterval(() => Console.WriteLine("Interval passed"), TimeSpan.FromSeconds(2));
+                SetInterval(() => Simulate(), TimeSpan.FromSeconds(4));
             }
         }
 
@@ -58,7 +64,9 @@ namespace OPCUAServer
         private ServiceResult OnStart(ISystemContext context, MethodState method, IList<object> inputArgs, IList<object> outputArgs)
         {
             Console.WriteLine("Conveyor started.");
-            
+       
+
+            Console.WriteLine(opcUaServer.Machine.Conveyor.Speed.Value);
             return ServiceResult.Good;
         }
 
@@ -67,6 +75,24 @@ namespace OPCUAServer
             Console.WriteLine("Conveyor stopped.");
 
             return ServiceResult.Good;
+        }
+
+
+        private void Simulate()
+        {
+            Console.WriteLine("Simulate called");
+            opcUaServer.Machine.Proximity.Value.Value = _random.NextDouble() * 100;   
+            opcUaServer.Machine.Proximity.Value.ClearChangeMasks(SystemContext, false);
+        }
+
+
+        public static async Task SetInterval(Action action, TimeSpan timeout)
+        {
+            await Task.Delay(timeout).ConfigureAwait(false);
+
+            action();
+
+            await SetInterval(action, timeout);
         }
     }
 }

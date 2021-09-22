@@ -17,7 +17,7 @@ namespace OPCUAServer
         {
             ServerProperties prop = new ServerProperties();
 
-            prop.ManufacturerName = "Macheronte";
+            prop.ManufacturerName = "HexQuote";
             prop.ProductName = "OPC Server";
             prop.ProductUri = "http://opcfoundation.org/OPCServer/InformationModelServer/v1.0";
             prop.SoftwareVersion = Utils.GetAssemblySoftwareVersion();
