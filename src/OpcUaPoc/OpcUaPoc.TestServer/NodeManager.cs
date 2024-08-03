@@ -50,6 +50,8 @@ namespace OPCUAServer
                 // replaces the untyped predefined nodes with their strongly typed versions.
                 AddPredefinedNode(SystemContext, opcUaServer);
 
+                opcUaServer.Machine.Conveyor.Speed.OnSimpleWriteValue = new NodeValueSimpleEventHandler(onValueChange);
+
                 // here add the methods handler
                 opcUaServer.Machine.Conveyor.Start.OnCallMethod = new GenericMethodCalledEventHandler(OnStart);
                 opcUaServer.Machine.Conveyor.Stop.OnCallMethod = new GenericMethodCalledEventHandler(OnStop);
@@ -58,6 +60,12 @@ namespace OPCUAServer
                 SetInterval(() => Console.WriteLine("Interval passed"), TimeSpan.FromSeconds(2));
                 SetInterval(() => Simulate(), TimeSpan.FromSeconds(4));
             }
+        }
+
+        private ServiceResult onValueChange(ISystemContext context, NodeState node, ref object value)
+        {
+            Console.WriteLine(value);
+            return ServiceResult.Good;
         }
 
         // method handlers
